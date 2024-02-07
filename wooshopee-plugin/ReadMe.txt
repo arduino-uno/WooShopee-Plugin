@@ -1,4 +1,4 @@
-=== WP WooShopee Plugin ===
+=== WooShopee Plugin ===
 Contributors: nath4n
 Tags: shopee, online shops, marketplace, products, items, orders, payments
 Requires at least: 4.6
@@ -9,12 +9,12 @@ Synchronize Shops and Items, process Orders and Payments & more!
 
 == Description ==
 
-A Wordpress Plugin to Censor your WordPress Pages, Posts & Comments From the Bad Word or Bad Language.
-Replace the Bad Words without changing the database (e.g. wp_posts & wp_comments).
+WooShopee Plugin is the open-source ecommerce platform for WordPress, to manage your items, orders and sales.
+This extension integrates your WooCommerce store with Shopee marketplace.
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/censorship` directory, or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the `/wp-content/plugins/wooshopee-plugin` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the `Plugins` screen in WordPress
 3. Use the `WP Censorship` menu to update the Settings (WP Censorship Configuration)
 

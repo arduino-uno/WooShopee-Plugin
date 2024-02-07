@@ -6,8 +6,8 @@ Description: Synchronize Shops and Items, process Orders and Payments & more!
 Version: 3.0.0
 Author: nath4n
 Author URI: https://profiles.wordpress.org/nath4n
-License: GPL2
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+License: GPL3
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Text Domain: wporg
 Domain Path: /languages
 */
@@ -40,17 +40,17 @@ $refreshToken = "";
 add_action( 'admin_head', function() {
 global $sets, $page;
 
-if ( $page == "wooShopee_main_page" || $page == "wooShopee_products_page") {
+	if ( $page == "wooShopee_main_page" || $page == "wooShopee_products_page") {
 
-	$created = $sets['created'];
-	$time_created =  date( 'm/d/Y H:i:s', $created );
-	$time_expired = date( 'm/d/Y H:i:s', strtotime( $time_created . ' + 4 hours' ) );
-	$current_time = date( 'm/d/Y H:i:s', time() );
+		$created = $sets['created'];
+		$time_created =  date( 'm/d/Y H:i:s', $created );
+		$time_expired = date( 'm/d/Y H:i:s', strtotime( $time_created . ' + 4 hours' ) );
+		$current_time = date( 'm/d/Y H:i:s', time() );
+			
+		$timeExpired = strtotime( $time_expired );
+		$currentTime = strtotime( $current_time );
 		
-	$timeExpired = strtotime( $time_expired );
-	$currentTime = strtotime( $current_time );
-
-	if ( $timeExpired >= $currentTime ) {
+		if ( $currentTime >= $timeExpired ) {
 
 			echo "<script>
 				jQuery( function( $ ) {
@@ -62,6 +62,7 @@ if ( $page == "wooShopee_main_page" || $page == "wooShopee_products_page") {
 						modal: true,
 						buttons: {
 							Ok: function() {
+								$( \"input#add_btn\" ).prop( \"disabled\", false );
 								$( this ).dialog( \"close\" );
 							}
 						}
@@ -69,31 +70,20 @@ if ( $page == "wooShopee_main_page" || $page == "wooShopee_products_page") {
 				});
 				</script>";
 
-			shopee_sessions();
+			delete_option( 'shopee_auths' );
+			return true;
 
 		};
 
 		/* Check any existing data settings	 */
-		if ( empty($sets['new_code']) || empty($sets['new_access_token']) || empty($sets['new_refresh_token']) ) {		
-				
-			echo "<script>
-				jQuery( function( $ ) {
-					$( \"<div title=\'WooShopee\'><p>The Shopee Account settings are not set.</p></div>\" ).dialog({
-						resizable: false,
-						draggable: false,
-						height: \"auto\",
-						width: 400,
-						modal: true,
-						buttons: {
-							Ok: function() {
-								$( this ).dialog( \"close\" );
-							}
-						}
-					});
-				});
-				</script>";
-
+		if ( empty($sets['new_code']) || empty($sets['new_access_token']) || empty($sets['new_refresh_token']) ) {			
 			shopee_sessions();
+		} else {			
+			echo "<script>
+					jQuery( function( $ ) {
+						$( \"input#add_btn\" ).prop( \"disabled\", true );
+					});
+				</script>";					
 		};
 
 	};
@@ -156,7 +146,7 @@ function shopee_sessions() {
 	}, 10, 2 );
 
 	add_action( 'admin_menu', function() {
-		add_menu_page( 'shopeeApp_adminmenu', 'Shopee App', 'manage_options', 'wooShopee_main_page', 'shopeeApp_page', 'dashicons-shortcode', '10' );
+		add_menu_page( 'shopeeApp_adminmenu', 'WooShopee', 'manage_options', 'wooShopee_main_page', 'shopeeApp_page', 'dashicons-products', '10' );
 		add_submenu_page( 'wooShopee_main_page', 'Manage Products', 'Manage Products', 'manage_options', 'wooShopee_products_page', 'wooShopee_products_page' );
 	}, 10, 2 );
 
@@ -342,29 +332,27 @@ function shopee_sessions() {
 		}
 
 		.float-left {
-			padding: 20px;
+			padding: 10px;
 			float: left;
 			width: 25%;
 			height: 280px;
 		}
 	
 		.float-right {
-			padding: 20px;		
+			padding: 10px;		
 			float: left;
 			width: 50%;
 			height: 280px;
 		}
 		</style>	
 		<div class="float-container">
-			<h2>Round Card</h2>
+			<h2>Shopee Account Settings</h2>
 			<div class="float-left">
 				<div class="card">
-					<img src="<?php echo plugins_url() . '/shopee-app/images/shopee_logo.png';?>" alt="Avatar" style="width:100%">
+					<img src="<?php echo plugins_url() . '/wooshopee-plugin/images/shopee_logo.png';?>" alt="Avatar" style="width:100%">
 					<div class="container">
-						<h4><b>Jane Doe</b></h4> 
-						<p>Interior Designer</p>		
-						<input type="submit" class="button" name="modal_btn" id="dialog_btn" value="Dialog UI/UX" />
-						<input type="submit" class="button" name="auth_btn" id="auth_btn" value="Authorize" />
+						<p><span style="font-family: monospace, monospace;font-weight: bold;font-size: 12px;">The Shopee Open API Client</span></p>
+						<input type="submit" class="button" name="add_btn" id="add_btn" value="Add Shopee Account"/>
 					</div>
 				</div>
 			</div>
@@ -386,10 +374,21 @@ function shopee_sessions() {
 			</div>
 		</div>
 		</p>
+		<div id="dialog" title="WooShopee Plugin" style="display: none;">
+			<p align="text-center">
+				<strong>Steps to authorize your account:</strong>
+				<p class="font-monospace" align="text-justify">
+				1. Click on the “Authorize” button which will redirect you to “open.shopee.com”</br>
+				2. On the Shopee authorization page you have to select the Country and then Login with
+				your seler panel details</br>
+				3. You heve to then cick on “Yes" button to enable access to API</br>
+				4. Finally you will be redirected to your site indcicating successful authorization</br>
+			</p>
+		</div>
 		<script type="text/javascript">	
-			jQuery( function( $ ) {
-					
-				$('input#auth_btn').click(function (e) {
+			jQuery( function( $ ) {				
+				
+				$('input#add_btn').click(function (e) {
 
 					e.preventDefault();
 					var ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
@@ -398,17 +397,35 @@ function shopee_sessions() {
 					var data = {
 						action: 'action_authShop',
 						nonce: action_nonce
-					};			
-					
-					jQuery.ajax({
-						type : "post",
-						dataType : "text",
-						url : ajaxurl,
-						data : {action: "action_authShop", nonce: action_nonce},
-						success: function(response) {					
-							jQuery(location).attr('href', response);
-							// console.log(response)						
-						}
+					};
+
+					jQuery( function( $ ) {
+						$( "#dialog" ).dialog({
+							resizable: false,
+							draggable: false,
+							height: "auto",
+							width: 400,
+							modal: true,
+							buttons: {
+								Authorize: function() {
+									jQuery.ajax({
+										type : "post",
+										dataType : "text",
+										url : ajaxurl,
+										data : {action: "action_authShop", nonce: action_nonce},
+										success: function(response) {					
+											jQuery(location).attr('href', response);
+											// console.log(response)						
+										}
+									});
+									$( this ).dialog( "close" );
+								},
+								Cancel: function () {
+									/* otherwise, just close the dialog; the delete event was already interrupted */
+									$(this).dialog("close");
+								}
+							}
+						});
 					});
 					
 				});
