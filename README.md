@@ -2,9 +2,9 @@
  Synchronize Shops and Items, process Orders and Payments & more!
 
 
-<p align="center"><img src="/wooshopee-plugin/images/shopee_logo.png" alt="ninja-logo" height="300px" alt="AdminLTE - Web BLog"></p>
+<p align="center"><img src="/wooshopee-plugin/images/shopee_logo.png" alt="ninja-logo" height="300px" alt="WooShopee Plugin"></p>
 
-<h2 align="center">AdminLTE - Web-Blog</h1>
+<h2 align="center">WooShopee Plugin</h1>
 <div align="center">
 
 [![bootstrap](https://img.shields.io/badge/Bootstrap-4.6-informational.svg?logo=bootstrap&logoColor=white)](https://getbootstrap.com)
